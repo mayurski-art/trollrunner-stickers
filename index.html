@@ -2846,7 +2846,7 @@ footer a:hover { color: #fff; }
       </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="val found-style-title" id="stats-total-stickers">0</div><div class="lbl found-style-title">Stickers</div></div>
-        <div class="stat-card"><div class="val found-style-title">156</div><div class="lbl found-style-title">Miles Ran</div></div>
+        <div class="stat-card"><div class="val found-style-title" id="stats-total-miles">0</div><div class="lbl found-style-title">Miles Ran</div></div>
         <div class="stat-card"><div class="val found-style-title" id="stats-total-locations">0</div><div class="lbl found-style-title">Spots</div></div>
         <div class="stat-card"><div class="val found-style-title" id="stats-total-cities">0</div><div class="lbl found-style-title">Cities</div></div>
       </div>
@@ -3366,6 +3366,7 @@ function formatDisplayDate(iso) {
 
 function updateStaticStats() {
   setText('stats-total-stickers', TOTAL_STICKERS);
+  setText('stats-total-miles', TOTAL_STICKERS);
   setText('stats-total-locations', TOTAL_LOCATIONS);
   setText('stats-total-cities', TOTAL_CITIES);
   setText('sidebar-sticker-count', TOTAL_STICKERS);
