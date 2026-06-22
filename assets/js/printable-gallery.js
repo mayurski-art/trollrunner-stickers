@@ -263,9 +263,15 @@
       const card = document.createElement('article');
       card.className = 'printable-card';
       const bg = sticker.bg || 'light';
+      // Optional preview-only down-scale so edge-to-edge square art reads at the
+      // same footprint as the portrait masters. Does not affect print output.
+      const previewScale = Number(sticker.previewScale);
+      const imgStyle = (previewScale > 0 && previewScale < 1)
+        ? ' style="max-width:' + (previewScale * 100) + '%;max-height:' + (previewScale * 100) + '%"'
+        : '';
       card.innerHTML =
         '<div class="printable-art printable-art--' + esc(bg) + '">' +
-          '<img src="' + esc(sticker.image) + '" alt="' + esc(sticker.title) + ' troll sticker" loading="lazy">' +
+          '<img src="' + esc(sticker.image) + '"' + imgStyle + ' alt="' + esc(sticker.title) + ' troll sticker" loading="lazy">' +
           '<span class="printable-art-missing">Art coming soon</span>' +
         '</div>' +
         '<div class="printable-card-body">' +
