@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "Printable sticker gallery manifest. Add a new template by dropping a high-res PNG in assets/stickers/ and appending an entry here. 'image' is the print master AND the preview (scaled by CSS). Keep masters >= 1200px on the long edge so QR codes stay crisp at 4 in / 300 DPI.",
+  "note": "Printable sticker gallery manifest. Add a new template by dropping a high-res PNG in assets/stickers/ and appending an entry here. 'image' is the print master AND the preview (scaled by CSS). Keep masters >= 1200px on the long edge so QR codes stay crisp at 4 in / 300 DPI. Optional 'previewScale' (0-1) shrinks a card's preview only (not the print output) so edge-to-edge square art matches the footprint of the portrait posters.",
   "stickers": [
     {
       "id": "sidelined-red-eyes",
@@ -9,7 +9,8 @@
       "tags": ["sidelined", "red-eyes"],
       "image": "assets/stickers/sidelined-red-eyes.jpg",
       "bg": "light",
-      "hasQR": true
+      "hasQR": true,
+      "previewScale": 0.8
     },
     {
       "id": "sidelined-bw",
@@ -27,7 +28,8 @@
       "tags": ["qr", "flying"],
       "image": "assets/stickers/flying-troll-qr.jpg",
       "bg": "light",
-      "hasQR": true
+      "hasQR": true,
+      "previewScale": 0.8
     },
     {
       "id": "u-mad-bro",
