@@ -17,6 +17,8 @@
   const MIN = 0.3;
   const MAX = 1;
   const state = {}; // id -> current scale
+  let bodyPad = 12; // px, bottom white box padding (global)
+  const BODY_PAD_DEFAULT = 12;
   let built = false;
 
   function api() { return window.TrollPrintables; }
@@ -53,6 +55,10 @@
       .st-body { padding: 8px 14px; overflow-y: auto; }
       .st-row { padding: 9px 0; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
       .st-row:last-child { border-bottom: 0; }
+      .st-global {
+        background: rgba(88,86,214,0.16); border: 0.5px solid rgba(120,118,255,0.35);
+        border-radius: 9px; padding: 9px 10px; margin-bottom: 6px;
+      }
       .st-row-top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
       .st-name { font-weight: 600; }
       .st-val { font-family: 'DM Mono', monospace; opacity: 0.85; min-width: 38px; text-align: right; }
@@ -90,10 +96,12 @@
     const lines = Object.keys(obj).map(function (id) {
       return '  "' + id + '": ' + obj[id];
     });
-    if (!lines.length) {
-      return '// every sticker at 1.0 — remove all "previewScale" fields';
-    }
-    return '// set each sticker\'s "previewScale" to:\n{\n' + lines.join(',\n') + '\n}';
+    const scalePart = lines.length
+      ? '// previewScale -> assets/data/stickers.json\n{\n' + lines.join(',\n') + '\n}'
+      : '// previewScale: all stickers at 1.0 (remove the field)';
+    const boxPart = '// bottom box -> index.html .printable-card-body\npadding: ' + bodyPad + 'px;'
+      + (bodyPad === BODY_PAD_DEFAULT ? '   /* current default */' : '');
+    return scalePart + '\n\n' + boxPart;
   }
 
   function refreshOutput(panel) {
@@ -126,6 +134,33 @@
       '</div>';
 
     const body = panel.querySelector('.st-body');
+
+    // Global: size of the bottom white box (.printable-card-body padding).
+    const sampleBody = document.querySelector('.printable-card-body');
+    if (sampleBody && window.getComputedStyle) {
+      const cur = parseFloat(window.getComputedStyle(sampleBody).paddingTop);
+      if (cur >= 0) bodyPad = Math.round(cur);
+    }
+    const globalRow = document.createElement('div');
+    globalRow.className = 'st-row st-global';
+    globalRow.innerHTML =
+      '<div class="st-row-top"><span class="st-name">Bottom box</span><span class="st-val st-body-val">' + bodyPad + 'px</span></div>' +
+      '<div class="st-controls">' +
+        '<input type="range" class="st-body-range" min="0" max="48" step="1" value="' + bodyPad + '">' +
+        '<button class="st-reset st-body-reset" type="button">' + BODY_PAD_DEFAULT + '</button>' +
+      '</div>';
+    const bodyRange = globalRow.querySelector('.st-body-range');
+    const bodyValEl = globalRow.querySelector('.st-body-val');
+    function applyBodyPad(px) {
+      bodyPad = px;
+      bodyValEl.textContent = px + 'px';
+      document.documentElement.style.setProperty('--printable-body-pad', px + 'px');
+      refreshOutput(panel);
+    }
+    bodyRange.addEventListener('input', function () { applyBodyPad(parseInt(bodyRange.value, 10)); });
+    globalRow.querySelector('.st-body-reset').addEventListener('click', function () { bodyRange.value = BODY_PAD_DEFAULT; applyBodyPad(BODY_PAD_DEFAULT); });
+    body.appendChild(globalRow);
+
     stickers.forEach(function (s) {
       const initial = (Number(s.previewScale) > 0 && Number(s.previewScale) <= 1) ? Number(s.previewScale) : 1;
       state[s.id] = initial;
@@ -156,11 +191,12 @@
     });
 
     panel.querySelector('.st-reset-all').addEventListener('click', function () {
-      panel.querySelectorAll('.st-row').forEach(function (row, i) {
-        const range = row.querySelector('input');
+      panel.querySelectorAll('.st-row:not(.st-global) input[type=range]').forEach(function (range) {
         range.value = 1;
         range.dispatchEvent(new Event('input'));
       });
+      bodyRange.value = BODY_PAD_DEFAULT;
+      applyBodyPad(BODY_PAD_DEFAULT);
     });
 
     panel.querySelector('.st-copy').addEventListener('click', function () {
