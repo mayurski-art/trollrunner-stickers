@@ -8,7 +8,6 @@ preview** (scaled down by CSS). One file per template.
 
 | File                          | Reference                            | Resolution  |
 | ----------------------------- | ------------------------------------ | ----------- |
-| `sidelined-red-eyes.jpg`      | red-eyes "SIDELINED?" troll          | 1035×1033   |
 | `sidelined-bw.png`            | black-and-white "SIDELINED?" troll   | 1170×1477   |
 | `flying-troll-qr.jpg`         | flying buff-troll wrapped in a QR    | 1155×1155   |
 | `u-mad-bro.jpg`               | "U MAD BRO?" $TROLL poster           | 720×900     |

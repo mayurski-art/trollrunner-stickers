@@ -3,16 +3,6 @@
   "note": "Printable sticker gallery manifest. Add a new template by dropping a high-res PNG in assets/stickers/ and appending an entry here. 'image' is the print master AND the preview (scaled by CSS). Keep masters >= 1200px on the long edge so QR codes stay crisp at 4 in / 300 DPI. Optional 'previewScale' (0-1) shrinks a card's preview only (not the print output) so edge-to-edge square art matches the footprint of the portrait posters. Optional 'bodyPad' (px, default 12) sets the white box padding for that card. Optional 'bodyPadTop' (px) overrides just the top of that box — the gap between the image and the Download button — without changing the other sides. Optional 'artPad' (px, default 14) sets the frame padding around the preview image for that card — lower it to let edge-to-edge art (like QR codes) fill more and shed white space. Optional 'centerButton' (bool) centers the Download button instead of stretching it full width. All of these are preview/layout only and never affect downloads.",
   "stickers": [
     {
-      "id": "sidelined-red-eyes",
-      "title": "Sidelined? (Red Eyes)",
-      "blurb": "Laser-eyed troll for when the bench can't hold the rage.",
-      "tags": ["sidelined", "red-eyes"],
-      "image": "assets/stickers/sidelined-red-eyes.jpg",
-      "bg": "light",
-      "hasQR": true,
-      "bodyPad": 7
-    },
-    {
       "id": "sidelined-bw",
       "title": "Sidelined? (Classic)",
       "blurb": "Black-and-white original. Slap it anywhere, troll everywhere.",
