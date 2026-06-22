@@ -264,6 +264,10 @@
       const card = document.createElement('article');
       card.className = 'printable-card';
       card.dataset.stickerId = sticker.id;
+      if (sticker.bodyPad != null && isFinite(Number(sticker.bodyPad))) {
+        card.style.setProperty('--printable-body-pad', Number(sticker.bodyPad) + 'px');
+      }
+      if (sticker.centerButton) card.classList.add('printable-card--center-btn');
       const bg = sticker.bg || 'light';
       // Optional preview-only down-scale so edge-to-edge square art reads at the
       // same footprint as the portrait masters. Does not affect print output.
@@ -292,10 +296,14 @@
     document.dispatchEvent(new CustomEvent('printables:rendered'));
   }
 
-  // Live preview-scale control, used by the dev scale tuner (?tune).
+  // Live controls used by the dev scale tuner (?tune).
+  function cardById(id) {
+    if (!els.grid) return null;
+    return els.grid.querySelector('[data-sticker-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+  }
+
   function setPreviewScale(id, scale) {
-    if (!els.grid) return;
-    const card = els.grid.querySelector('[data-sticker-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    const card = cardById(id);
     const img = card && card.querySelector('img');
     if (!img) return;
     const value = Number(scale);
@@ -306,6 +314,20 @@
       img.style.maxWidth = '';
       img.style.maxHeight = '';
     }
+  }
+
+  function setBodyPad(id, px) {
+    const card = cardById(id);
+    if (!card) return;
+    const value = Number(px);
+    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-body-pad', value + 'px');
+    else card.style.removeProperty('--printable-body-pad');
+  }
+
+  function setCenterButton(id, on) {
+    const card = cardById(id);
+    if (!card) return;
+    card.classList.toggle('printable-card--center-btn', !!on);
   }
 
   function showEmpty() {
@@ -346,7 +368,9 @@
   // Small API for the dev scale tuner (assets/js/scale-tuner.js, gated by ?tune).
   window.TrollPrintables = {
     getStickers: function () { return loadedStickers.slice(); },
-    setPreviewScale: setPreviewScale
+    setPreviewScale: setPreviewScale,
+    setBodyPad: setBodyPad,
+    setCenterButton: setCenterButton
   };
 
   if (document.readyState === 'loading') {
