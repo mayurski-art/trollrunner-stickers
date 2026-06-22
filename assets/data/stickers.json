@@ -10,7 +10,7 @@
       "image": "assets/stickers/sidelined-red-eyes.jpg",
       "bg": "light",
       "hasQR": true,
-      "previewScale": 0.8
+      "previewScale": 0.98
     },
     {
       "id": "sidelined-bw",
@@ -19,7 +19,8 @@
       "tags": ["sidelined", "classic"],
       "image": "assets/stickers/sidelined-bw.png",
       "bg": "light",
-      "hasQR": true
+      "hasQR": true,
+      "previewScale": 0.98
     },
     {
       "id": "flying-troll-qr",
@@ -28,8 +29,7 @@
       "tags": ["qr", "flying"],
       "image": "assets/stickers/flying-troll-qr.jpg",
       "bg": "light",
-      "hasQR": true,
-      "previewScale": 0.8
+      "hasQR": true
     },
     {
       "id": "u-mad-bro",
