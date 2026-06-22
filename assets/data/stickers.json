@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "note": "Printable sticker gallery manifest. Add a new template by dropping a high-res PNG in assets/stickers/ and appending an entry here. 'image' is the print master AND the preview (scaled by CSS). Keep masters >= 1200px on the long edge so QR codes stay crisp at 4 in / 300 DPI. Optional 'previewScale' (0-1) shrinks a card's preview only (not the print output) so edge-to-edge square art matches the footprint of the portrait posters. Optional 'bodyPad' (px, default 12) sets the bottom white box padding for that card. Optional 'centerButton' (bool) centers the Download button instead of stretching it full width. All three are preview/layout only and never affect downloads.",
+  "note": "Printable sticker gallery manifest. Add a new template by dropping a high-res PNG in assets/stickers/ and appending an entry here. 'image' is the print master AND the preview (scaled by CSS). Keep masters >= 1200px on the long edge so QR codes stay crisp at 4 in / 300 DPI. Optional 'previewScale' (0-1) shrinks a card's preview only (not the print output) so edge-to-edge square art matches the footprint of the portrait posters. Optional 'bodyPad' (px, default 12) sets the bottom white box padding for that card. Optional 'artPad' (px, default 14) sets the frame padding around the preview image for that card — lower it to let edge-to-edge art (like QR codes) fill more and shed white space. Optional 'centerButton' (bool) centers the Download button instead of stretching it full width. All of these are preview/layout only and never affect downloads.",
   "stickers": [
     {
       "id": "sidelined-red-eyes",
@@ -10,9 +10,7 @@
       "image": "assets/stickers/sidelined-red-eyes.jpg",
       "bg": "light",
       "hasQR": true,
-      "previewScale": 0.98,
-      "bodyPad": 0,
-      "centerButton": true
+      "bodyPad": 7
     },
     {
       "id": "sidelined-bw",
@@ -22,8 +20,7 @@
       "image": "assets/stickers/sidelined-bw.png",
       "bg": "light",
       "hasQR": true,
-      "previewScale": 0.98,
-      "bodyPad": 6
+      "bodyPad": 10
     },
     {
       "id": "flying-troll-qr",
@@ -33,8 +30,8 @@
       "image": "assets/stickers/flying-troll-qr.jpg",
       "bg": "light",
       "hasQR": true,
-      "bodyPad": 0,
-      "centerButton": true
+      "bodyPad": 8,
+      "artPad": 0
     },
     {
       "id": "u-mad-bro",
