@@ -17,9 +17,11 @@
 
   const SCALE_MIN = 0.3, SCALE_MAX = 1, SCALE_STEP = 0.01;
   const BOX_MIN = 0, BOX_MAX = 48, BOX_STEP = 1;
+  const ART_MIN = 0, ART_MAX = 30, ART_STEP = 1;
   const BODY_PAD_DEFAULT = 12;
+  const ART_PAD_DEFAULT = 14;
 
-  const state = {};        // id -> { scale, pad, center }
+  const state = {};        // id -> { scale, pad, art, center }
   let stickerList = [];    // preserves order + titles
   let built = false;
 
@@ -96,6 +98,7 @@
       const parts = [];
       if (round2(st.scale) < 1) parts.push('previewScale ' + round2(st.scale));
       if (Number(st.pad) !== BODY_PAD_DEFAULT) parts.push('bodyPad ' + Number(st.pad));
+      if (Number(st.art) !== ART_PAD_DEFAULT) parts.push('artPad ' + Number(st.art));
       if (st.center) parts.push('centerButton true');
       if (parts.length) lines.push('  ' + (s.id + ':').padEnd(22) + parts.join(', '));
     });
@@ -139,8 +142,9 @@
     stickers.forEach(function (s) {
       const initScale = (Number(s.previewScale) > 0 && Number(s.previewScale) <= 1) ? Number(s.previewScale) : 1;
       const initPad = (s.bodyPad != null && isFinite(Number(s.bodyPad))) ? Number(s.bodyPad) : BODY_PAD_DEFAULT;
+      const initArt = (s.artPad != null && isFinite(Number(s.artPad))) ? Number(s.artPad) : ART_PAD_DEFAULT;
       const initCenter = !!s.centerButton;
-      state[s.id] = { scale: initScale, pad: initPad, center: initCenter };
+      state[s.id] = { scale: initScale, pad: initPad, art: initArt, center: initCenter };
 
       const row = document.createElement('div');
       row.className = 'st-row';
@@ -155,6 +159,11 @@
           '<input type="range" class="st-box" min="' + BOX_MIN + '" max="' + BOX_MAX + '" step="' + BOX_STEP + '">' +
           '<span class="st-val st-box-val"></span>' +
           '<label class="st-center"><input type="checkbox" class="st-center-cb"> center</label>' +
+        '</div>' +
+        '<div class="st-controls st-sub-controls">' +
+          '<span class="st-sub">frame</span>' +
+          '<input type="range" class="st-art" min="' + ART_MIN + '" max="' + ART_MAX + '" step="' + ART_STEP + '">' +
+          '<span class="st-val st-art-val"></span>' +
         '</div>';
       row.querySelector('.st-name').textContent = s.title || s.id;
 
@@ -162,23 +171,29 @@
       const scaleVal = row.querySelector('.st-scale-val');
       const box = row.querySelector('.st-box');
       const boxVal = row.querySelector('.st-box-val');
+      const art = row.querySelector('.st-art');
+      const artVal = row.querySelector('.st-art-val');
       const cb = row.querySelector('.st-center-cb');
       range.value = initScale; scaleVal.textContent = initScale.toFixed(2);
       box.value = initPad; boxVal.textContent = initPad + 'px';
+      art.value = initArt; artVal.textContent = initArt + 'px';
       cb.checked = initCenter;
 
       function applyScale(v) { state[s.id].scale = v; scaleVal.textContent = v.toFixed(2); if (helper.setPreviewScale) helper.setPreviewScale(s.id, v); refreshOutput(panel); }
       function applyPad(px) { state[s.id].pad = px; boxVal.textContent = px + 'px'; if (helper.setBodyPad) helper.setBodyPad(s.id, px); refreshOutput(panel); }
+      function applyArt(px) { state[s.id].art = px; artVal.textContent = px + 'px'; if (helper.setArtPad) helper.setArtPad(s.id, px); refreshOutput(panel); }
       function applyCenter(on) { state[s.id].center = on; if (helper.setCenterButton) helper.setCenterButton(s.id, on); refreshOutput(panel); }
 
       range.addEventListener('input', function () { applyScale(parseFloat(range.value)); });
       box.addEventListener('input', function () { applyPad(parseInt(box.value, 10)); });
+      art.addEventListener('input', function () { applyArt(parseInt(art.value, 10)); });
       cb.addEventListener('change', function () { applyCenter(cb.checked); });
       row.querySelector('.st-scale-reset').addEventListener('click', function () { range.value = 1; applyScale(1); });
 
       resetters.push(function () {
         range.value = 1; applyScale(1);
         box.value = BODY_PAD_DEFAULT; applyPad(BODY_PAD_DEFAULT);
+        art.value = ART_PAD_DEFAULT; applyArt(ART_PAD_DEFAULT);
         cb.checked = false; applyCenter(false);
       });
 
