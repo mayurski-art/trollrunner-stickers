@@ -267,12 +267,9 @@
         '<div class="printable-art printable-art--' + esc(bg) + '">' +
           '<img src="' + esc(sticker.image) + '" alt="' + esc(sticker.title) + ' troll sticker" loading="lazy">' +
           '<span class="printable-art-missing">Art coming soon</span>' +
-          (sticker.hasQR ? '<span class="printable-qr-badge">QR</span>' : '') +
         '</div>' +
         '<div class="printable-card-body">' +
-          '<h3>' + esc(sticker.title) + '</h3>' +
-          '<p>' + esc(sticker.blurb) + '</p>' +
-          '<button class="printable-download-btn" type="button" aria-haspopup="dialog">Download for print</button>' +
+          '<button class="printable-download-btn" type="button" aria-haspopup="dialog" aria-label="Download ' + esc(sticker.title) + ' for print">Download for print</button>' +
         '</div>';
       card.querySelector('img').addEventListener('error', function () {
         card.querySelector('.printable-art').classList.add('is-missing');
