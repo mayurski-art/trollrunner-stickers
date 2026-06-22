@@ -267,6 +267,9 @@
       if (sticker.bodyPad != null && isFinite(Number(sticker.bodyPad))) {
         card.style.setProperty('--printable-body-pad', Number(sticker.bodyPad) + 'px');
       }
+      if (sticker.bodyPadTop != null && isFinite(Number(sticker.bodyPadTop))) {
+        card.style.setProperty('--printable-body-pad-top', Number(sticker.bodyPadTop) + 'px');
+      }
       if (sticker.artPad != null && isFinite(Number(sticker.artPad))) {
         card.style.setProperty('--printable-art-pad', Number(sticker.artPad) + 'px');
       }
@@ -335,6 +338,15 @@
     else card.style.removeProperty('--printable-art-pad');
   }
 
+  function setBodyPadTop(id, px) {
+    const card = cardById(id);
+    if (!card) return;
+    if (px == null) { card.style.removeProperty('--printable-body-pad-top'); return; }
+    const value = Number(px);
+    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-body-pad-top', value + 'px');
+    else card.style.removeProperty('--printable-body-pad-top');
+  }
+
   function setCenterButton(id, on) {
     const card = cardById(id);
     if (!card) return;
@@ -381,6 +393,7 @@
     getStickers: function () { return loadedStickers.slice(); },
     setPreviewScale: setPreviewScale,
     setBodyPad: setBodyPad,
+    setBodyPadTop: setBodyPadTop,
     setArtPad: setArtPad,
     setCenterButton: setCenterButton
   };
