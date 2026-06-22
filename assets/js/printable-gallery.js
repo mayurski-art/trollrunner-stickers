@@ -267,6 +267,9 @@
       if (sticker.bodyPad != null && isFinite(Number(sticker.bodyPad))) {
         card.style.setProperty('--printable-body-pad', Number(sticker.bodyPad) + 'px');
       }
+      if (sticker.artPad != null && isFinite(Number(sticker.artPad))) {
+        card.style.setProperty('--printable-art-pad', Number(sticker.artPad) + 'px');
+      }
       if (sticker.centerButton) card.classList.add('printable-card--center-btn');
       const bg = sticker.bg || 'light';
       // Optional preview-only down-scale so edge-to-edge square art reads at the
@@ -324,6 +327,14 @@
     else card.style.removeProperty('--printable-body-pad');
   }
 
+  function setArtPad(id, px) {
+    const card = cardById(id);
+    if (!card) return;
+    const value = Number(px);
+    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-art-pad', value + 'px');
+    else card.style.removeProperty('--printable-art-pad');
+  }
+
   function setCenterButton(id, on) {
     const card = cardById(id);
     if (!card) return;
@@ -370,6 +381,7 @@
     getStickers: function () { return loadedStickers.slice(); },
     setPreviewScale: setPreviewScale,
     setBodyPad: setBodyPad,
+    setArtPad: setArtPad,
     setCenterButton: setCenterButton
   };
 
