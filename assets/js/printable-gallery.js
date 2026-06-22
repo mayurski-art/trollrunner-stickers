@@ -33,6 +33,7 @@
   let lastFocused = null;
   let isBusy = false;
   let jspdfPromise = null;
+  let loadedStickers = [];
   const rasterCache = {}; // id -> { dataURL, natW, natH }
 
   /* ---------- helpers ---------- */
@@ -262,6 +263,7 @@
     stickers.forEach(function (sticker) {
       const card = document.createElement('article');
       card.className = 'printable-card';
+      card.dataset.stickerId = sticker.id;
       const bg = sticker.bg || 'light';
       // Optional preview-only down-scale so edge-to-edge square art reads at the
       // same footprint as the portrait masters. Does not affect print output.
@@ -287,6 +289,23 @@
     });
     els.grid.innerHTML = '';
     els.grid.appendChild(frag);
+    document.dispatchEvent(new CustomEvent('printables:rendered'));
+  }
+
+  // Live preview-scale control, used by the dev scale tuner (?tune).
+  function setPreviewScale(id, scale) {
+    if (!els.grid) return;
+    const card = els.grid.querySelector('[data-sticker-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    const img = card && card.querySelector('img');
+    if (!img) return;
+    const value = Number(scale);
+    if (value > 0 && value < 1) {
+      img.style.maxWidth = (value * 100) + '%';
+      img.style.maxHeight = (value * 100) + '%';
+    } else {
+      img.style.maxWidth = '';
+      img.style.maxHeight = '';
+    }
   }
 
   function showEmpty() {
@@ -315,6 +334,7 @@
       .then(function (data) {
         const list = data && Array.isArray(data.stickers) ? data.stickers : [];
         if (!list.length) { showEmpty(); return; }
+        loadedStickers = list;
         renderCards(list);
       })
       .catch(function (err) {
@@ -322,6 +342,12 @@
         showEmpty();
       });
   }
+
+  // Small API for the dev scale tuner (assets/js/scale-tuner.js, gated by ?tune).
+  window.TrollPrintables = {
+    getStickers: function () { return loadedStickers.slice(); },
+    setPreviewScale: setPreviewScale
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
