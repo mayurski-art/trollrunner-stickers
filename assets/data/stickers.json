@@ -7,9 +7,9 @@
       "title": "Sidelined? (Red Eyes)",
       "blurb": "Laser-eyed troll for when the bench can't hold the rage.",
       "tags": ["sidelined", "red-eyes"],
-      "image": "assets/stickers/sidelined-red-eyes.png",
+      "image": "assets/stickers/sidelined-red-eyes.jpg",
       "bg": "light",
-      "hasQR": false
+      "hasQR": true
     },
     {
       "id": "sidelined-bw",
@@ -25,7 +25,7 @@
       "title": "Flying Troll QR",
       "blurb": "Buff troll mid-leap, wrapped in a scannable QR. Catch him if you can.",
       "tags": ["qr", "flying"],
-      "image": "assets/stickers/flying-troll-qr.png",
+      "image": "assets/stickers/flying-troll-qr.jpg",
       "bg": "light",
       "hasQR": true
     },
@@ -34,7 +34,7 @@
       "title": "U Mad Bro? ($TROLL)",
       "blurb": "Infiltrating minds since 2008. Poster-style drop for the believers.",
       "tags": ["poster", "troll-coin"],
-      "image": "assets/stickers/u-mad-bro.png",
+      "image": "assets/stickers/u-mad-bro.jpg",
       "bg": "dark",
       "hasQR": true
     },
@@ -43,17 +43,8 @@
       "title": "Cupped Hands (Green QR)",
       "blurb": "A troll offering. Scan what's in the palms if you dare.",
       "tags": ["qr", "green"],
-      "image": "assets/stickers/cupped-hands-qr.png",
+      "image": "assets/stickers/cupped-hands-qr.jpg",
       "bg": "sky",
-      "hasQR": true
-    },
-    {
-      "id": "sidelined-portrait",
-      "title": "Sidelined? (Portrait)",
-      "blurb": "Plain portrait cut. Clean lines, maximum smug.",
-      "tags": ["sidelined", "portrait"],
-      "image": "assets/stickers/sidelined-portrait.png",
-      "bg": "light",
       "hasQR": true
     }
   ]
