@@ -2810,6 +2810,260 @@ footer a:hover { color: #fff; }
     padding: 18px 14px 4px;
   }
 }
+
+/* ── PRINTABLE STICKER GALLERY ── */
+#printables-section {
+  max-width: 1180px;
+  margin: 26px auto 6px;
+  padding: 0 24px;
+}
+.printables-head {
+  margin-bottom: 16px;
+}
+.printables-head h2 {
+  font-size: 26px;
+  color: rgba(255,255,255,0.95);
+}
+.printables-sub {
+  margin-top: 4px;
+  max-width: 640px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.66);
+}
+.printables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+.printable-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 0.5px solid #d1d1d6;
+  overflow: hidden;
+  color: #1c1c1e;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.printable-card:hover,
+.printable-card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+}
+.printable-art {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: #f5f5f7;
+  border-bottom: 0.5px solid #e3e3e8;
+}
+.printable-art--sky {
+  background: linear-gradient(180deg, #8fc7ff 0%, #cfe9ff 100%);
+}
+.printable-art--dark {
+  background: radial-gradient(circle at 50% 30%, #20304a 0%, #0c1320 100%);
+}
+.printable-art img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.printable-art .printable-art-missing {
+  display: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6e6e73;
+  text-align: center;
+  padding: 0 8px;
+  line-height: 1.4;
+}
+.printable-art.is-missing img { display: none; }
+.printable-art.is-missing .printable-art-missing { display: block; }
+.printable-qr-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(28,28,30,0.86);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.printable-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 14px 16px 16px;
+}
+.printable-card-body h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.printable-card-body p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4a4a4a;
+  flex: 1;
+}
+.printable-download-btn {
+  margin-top: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #007aff, #5856d6);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+}
+.printable-download-btn:hover { filter: brightness(1.07); }
+.printable-download-btn:active { transform: scale(0.98); }
+.printable-download-btn:focus-visible {
+  outline: 2px solid #007aff;
+  outline-offset: 2px;
+}
+.printables-empty {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+.print-tips {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 0.5px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.82);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.print-tips strong { color: #fff; }
+.print-tips ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.print-tips li { margin-top: 4px; }
+
+/* size-picker modal */
+.print-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.print-modal[hidden] { display: none; }
+.print-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+}
+.print-modal-panel {
+  position: relative;
+  width: min(380px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: #ffffff;
+  color: #1c1c1e;
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+.print-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f0f3;
+  color: #1c1c1e;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.print-modal-panel h3 {
+  font-size: 18px;
+  font-weight: 700;
+  padding-right: 28px;
+}
+.print-modal-hint {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6e6e73;
+}
+.print-modal-options {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.print-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  border: 0.5px solid #d1d1d6;
+  border-radius: 12px;
+  background: #fbfbfd;
+  color: #1c1c1e;
+  padding: 11px 14px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.print-opt span {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #8a8a8e;
+}
+.print-opt:hover { background: #eef1ff; border-color: #5856d6; }
+.print-opt:focus-visible { outline: 2px solid #007aff; outline-offset: 2px; }
+.print-opt:disabled { opacity: 0.5; cursor: progress; }
+.print-modal-status {
+  margin-top: 12px;
+  min-height: 16px;
+  font-size: 12px;
+  color: #6e6e73;
+}
+@media (max-width: 560px) {
+  .print-modal { align-items: flex-end; }
+  .print-modal-panel {
+    width: 100%;
+    max-width: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-bottom: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .printable-card,
+  .printable-download-btn { transition: none; }
+}
 </style>
 </head>
 <body>
@@ -2869,6 +3123,22 @@ footer a:hover { color: #fff; }
       </section>
     </div>
   </section>
+<section id="printables-section" aria-labelledby="printables-heading">
+  <div class="printables-head">
+    <h2 class="found-style-title" id="printables-heading">Free Printable Stickers</h2>
+    <p class="printables-sub">Grab a troll, print it, slap it. Preview below, download a print-ready file, go cause problems. Free forever.</p>
+  </div>
+  <div id="printables-grid" class="printables-grid" aria-live="polite"></div>
+  <p id="printables-empty" class="printables-empty" hidden>Couldn't load the sticker manifest. Refresh and the trolls should show up.</p>
+  <div class="print-tips">
+    <strong>&#128424;&#65039; Print tips</strong>
+    <ul>
+      <li>Print on glossy <strong>vinyl or sticker paper</strong> for drops that survive the elements.</li>
+      <li>In the print dialog set <strong>Scale&nbsp;= 100%</strong> (Actual size) &mdash; do <em>not</em> pick &ldquo;Fit to page,&rdquo; it shrinks the art and breaks the QR.</li>
+      <li>Choose <strong>Best / High</strong> quality. QR stickers scan cleanly at 2&Prime; and up.</li>
+    </ul>
+  </div>
+</section>
 <section id="map-section">
   <div class="map-section-head">
     <div>
@@ -2959,6 +3229,17 @@ footer a:hover { color: #fff; }
 
   </div>
 </section>
+
+<div id="print-modal" class="print-modal" role="dialog" aria-modal="true" aria-labelledby="print-modal-title" hidden>
+  <div class="print-modal-backdrop" data-print-close></div>
+  <div class="print-modal-panel">
+    <button class="print-modal-close" type="button" aria-label="Close download options" data-print-close>&times;</button>
+    <h3 id="print-modal-title">Download &ldquo;<span id="print-modal-name"></span>&rdquo;</h3>
+    <p class="print-modal-hint">Pick a format. PDFs are sized for real-world printing &mdash; the inch value is the long edge.</p>
+    <div class="print-modal-options" id="print-modal-options"></div>
+    <p class="print-modal-status" id="print-modal-status" role="status" aria-live="polite"></p>
+  </div>
+</div>
 
 </main>
 <footer>
@@ -4901,5 +5182,6 @@ initMap(); buildTabs(); updateStaticStats(); renderPins(); renderList(); initPan
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/site-lock.js"></script>
   <script src="assets/js/admin-auth.js"></script>
+  <script src="assets/js/printable-gallery.js"></script>
 </body>
 </html>
