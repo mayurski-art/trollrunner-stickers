@@ -1,0 +1,8 @@
+# Secrets — never commit real env values
+.env
+.env.local
+.env.*.local
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
