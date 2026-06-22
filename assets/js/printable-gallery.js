@@ -33,7 +33,6 @@
   let lastFocused = null;
   let isBusy = false;
   let jspdfPromise = null;
-  let loadedStickers = [];
   const rasterCache = {}; // id -> { dataURL, natW, natH }
 
   /* ---------- helpers ---------- */
@@ -263,7 +262,6 @@
     stickers.forEach(function (sticker) {
       const card = document.createElement('article');
       card.className = 'printable-card';
-      card.dataset.stickerId = sticker.id;
       if (sticker.bodyPad != null && isFinite(Number(sticker.bodyPad))) {
         card.style.setProperty('--printable-body-pad', Number(sticker.bodyPad) + 'px');
       }
@@ -299,58 +297,6 @@
     });
     els.grid.innerHTML = '';
     els.grid.appendChild(frag);
-    document.dispatchEvent(new CustomEvent('printables:rendered'));
-  }
-
-  // Live controls used by the dev scale tuner (?tune).
-  function cardById(id) {
-    if (!els.grid) return null;
-    return els.grid.querySelector('[data-sticker-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
-  }
-
-  function setPreviewScale(id, scale) {
-    const card = cardById(id);
-    const img = card && card.querySelector('img');
-    if (!img) return;
-    const value = Number(scale);
-    if (value > 0 && value < 1) {
-      img.style.maxWidth = (value * 100) + '%';
-      img.style.maxHeight = (value * 100) + '%';
-    } else {
-      img.style.maxWidth = '';
-      img.style.maxHeight = '';
-    }
-  }
-
-  function setBodyPad(id, px) {
-    const card = cardById(id);
-    if (!card) return;
-    const value = Number(px);
-    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-body-pad', value + 'px');
-    else card.style.removeProperty('--printable-body-pad');
-  }
-
-  function setArtPad(id, px) {
-    const card = cardById(id);
-    if (!card) return;
-    const value = Number(px);
-    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-art-pad', value + 'px');
-    else card.style.removeProperty('--printable-art-pad');
-  }
-
-  function setBodyPadTop(id, px) {
-    const card = cardById(id);
-    if (!card) return;
-    if (px == null) { card.style.removeProperty('--printable-body-pad-top'); return; }
-    const value = Number(px);
-    if (isFinite(value) && value >= 0) card.style.setProperty('--printable-body-pad-top', value + 'px');
-    else card.style.removeProperty('--printable-body-pad-top');
-  }
-
-  function setCenterButton(id, on) {
-    const card = cardById(id);
-    if (!card) return;
-    card.classList.toggle('printable-card--center-btn', !!on);
   }
 
   function showEmpty() {
@@ -379,7 +325,6 @@
       .then(function (data) {
         const list = data && Array.isArray(data.stickers) ? data.stickers : [];
         if (!list.length) { showEmpty(); return; }
-        loadedStickers = list;
         renderCards(list);
       })
       .catch(function (err) {
@@ -387,16 +332,6 @@
         showEmpty();
       });
   }
-
-  // Small API for the dev scale tuner (assets/js/scale-tuner.js, gated by ?tune).
-  window.TrollPrintables = {
-    getStickers: function () { return loadedStickers.slice(); },
-    setPreviewScale: setPreviewScale,
-    setBodyPad: setBodyPad,
-    setBodyPadTop: setBodyPadTop,
-    setArtPad: setArtPad,
-    setCenterButton: setCenterButton
-  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
