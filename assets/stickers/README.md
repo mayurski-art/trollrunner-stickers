@@ -4,16 +4,19 @@ High-resolution source images for the free printable gallery. Each file here is
 both the **print master** (embedded into the generated PDFs) and the **card
 preview** (scaled down by CSS). One file per template.
 
-## Files expected by `assets/data/stickers.json`
+## Files (paths come from `assets/data/stickers.json`)
 
-| File                          | Reference                                   |
-| ----------------------------- | ------------------------------------------- |
-| `sidelined-red-eyes.png`      | red-eyes "SIDELINED?" troll                 |
-| `sidelined-bw.png`            | black-and-white "SIDELINED?" troll          |
-| `flying-troll-qr.png`         | flying buff-troll wrapped in a QR           |
-| `u-mad-bro.png`               | "U MAD BRO?" $TROLL poster                  |
-| `cupped-hands-qr.png`         | cupped-hands troll with the green QR        |
-| `sidelined-portrait.png`      | plain "SIDELINED?" portrait                 |
+| File                          | Reference                            | Resolution  |
+| ----------------------------- | ------------------------------------ | ----------- |
+| `sidelined-red-eyes.jpg`      | red-eyes "SIDELINED?" troll          | 1035×1033   |
+| `sidelined-bw.png`            | black-and-white "SIDELINED?" troll   | 1170×1477   |
+| `flying-troll-qr.jpg`         | flying buff-troll wrapped in a QR    | 1155×1155   |
+| `u-mad-bro.jpg`               | "U MAD BRO?" $TROLL poster           | 720×900     |
+| `cupped-hands-qr.jpg`         | cupped-hands troll with the green QR | 1280×1280   |
+
+The manifest's `image` field is the source of truth for each filename — JPG and
+PNG are both fine. `u-mad-bro.jpg` (720×900) is the lowest-res master; re-export
+it larger if you want crisp 4″ prints or a reliably scannable QR at small sizes.
 
 ## Rules
 
