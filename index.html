@@ -4404,34 +4404,6 @@ function setFeedback(items) {
   localStorage.setItem(ADMIN_FEEDBACK_KEY, JSON.stringify(mergeFeedbackItems(items)));
 }
 
-function buildSharedUpdatesPayload(items, liveStatuses = { running: false, coding: false }, feedbackItems = []) {
-  const visibleItems = Array.isArray(items) ? items.filter(item => !isSharedStatusMetaItem(item) && !isSharedFeedbackMetaItem(item)) : [];
-  return [
-    ...visibleItems,
-    {
-      id: SHARED_STATUS_META_ID,
-      title: '__live_status_meta__',
-      body: '__live_status_meta__',
-      createdAt: new Date().toISOString(),
-      archived: true,
-      source: 'system',
-      liveStatuses: {
-        running: Boolean(liveStatuses.running),
-        coding: Boolean(liveStatuses.coding),
-      },
-    },
-    {
-      id: SHARED_FEEDBACK_META_ID,
-      title: '__feedback_meta__',
-      body: '__feedback_meta__',
-      createdAt: new Date().toISOString(),
-      archived: true,
-      source: 'system',
-      feedback: mergeFeedbackItems(feedbackItems),
-    },
-  ];
-}
-
 async function parseSupabaseError(response) {
   if (!response) return 'No response from Supabase.';
   const prefix = `HTTP ${response.status}`;
@@ -4446,59 +4418,6 @@ async function parseSupabaseError(response) {
     } catch {
       return prefix;
     }
-  }
-}
-
-async function syncFeedbackToBackend(items) {
-  if (!isSupabaseConfigured()) return false;
-  try {
-    const qs = new URLSearchParams({
-      select: 'updates,live_status_enabled',
-      id: `eq.${SUPABASE_ROW_ID}`,
-      limit: '1'
-    });
-    const existingResponse = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?${qs.toString()}`, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-    });
-    if (!existingResponse.ok) return false;
-    const existingJson = await existingResponse.json();
-    const existingPayload = Array.isArray(existingJson) ? existingJson[0] : existingJson;
-    const visibleUpdates = parseSharedUpdatesPayload(existingPayload);
-    const liveStatusEnabled = parseSharedStatusFlag(existingPayload?.live_status_enabled);
-
-    const payload = {
-      id: SUPABASE_ROW_ID,
-      updates: [
-        ...visibleUpdates,
-        {
-          id: SHARED_FEEDBACK_META_ID,
-          title: '__feedback_meta__',
-          body: '__feedback_meta__',
-          createdAt: new Date().toISOString(),
-          archived: true,
-          source: 'system',
-          items: Array.isArray(items) ? items : [],
-        }
-      ],
-      live_status_enabled: liveStatusEnabled === null ? false : liveStatusEnabled,
-      updated_at: new Date().toISOString(),
-    };
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        Prefer: 'resolution=merge-duplicates,return=minimal',
-      },
-      body: JSON.stringify([payload]),
-    });
-    return response.ok;
-  } catch {
-    return false;
   }
 }
 
@@ -4647,29 +4566,28 @@ function initializeFeedbackIdentity() {
   });
 }
 
-async function syncFeedbackToBackend(feedbackItems, sharedStateOverride = null) {
+// Submits one feedback item through the troll_submit_feedback RPC (see
+// assets/supabase/troll_admin_lockdown.sql on the main site repo), which
+// merges it into the feedback meta key server-side -- the visitor's anon
+// key can no longer touch site lock / live status / notis / update content
+// in the process.
+async function submitFeedbackToBackend(item) {
   if (!isSupabaseConfigured()) return false;
-  const sharedState = sharedStateOverride || await loadSharedStateFromBackend();
-  const payload = {
-    id: SUPABASE_ROW_ID,
-    updates: buildSharedUpdatesPayload(
-      Array.isArray(sharedState.updates) ? sharedState.updates : [],
-      sharedState.liveStatuses || { running: false, coding: false },
-      feedbackItems
-    ),
-    live_status_enabled: Boolean(sharedState.liveStatuses?.running),
-    updated_at: new Date().toISOString(),
-  };
   try {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/troll_submit_feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        Prefer: 'resolution=merge-duplicates,return=minimal',
       },
-      body: JSON.stringify([payload]),
+      body: JSON.stringify({
+        p_message: item.rawMessage || item.message,
+        p_username: item.includeUsername ? item.username : null,
+        p_include_username: Boolean(item.includeUsername),
+        p_topic: item.aiTopic,
+        p_priority: item.aiPriority,
+      }),
     });
     return response.ok;
   } catch {
@@ -4750,11 +4668,7 @@ function submitFeedback() {
   status.textContent = 'Sending feedback...';
 
   Promise.allSettled([
-    loadSharedStateFromBackend().then(sharedState => {
-      const mergedFeedback = mergeFeedbackItems([feedbackItem], sharedState.feedback, localItems);
-      setFeedback(mergedFeedback);
-      return syncFeedbackToBackend(mergedFeedback, sharedState);
-    }),
+    submitFeedbackToBackend(feedbackItem),
     pushFeedbackToGoogleSheets(feedbackItem),
   ]).then(results => {
     const sharedSyncOk = results[0].status === 'fulfilled' ? results[0].value : false;
