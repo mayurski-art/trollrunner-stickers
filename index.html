@@ -3278,7 +3278,6 @@ const SUPABASE_URL = 'https://tjsyhfplxjtakdfkpdtg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqc3loZnBseGp0YWtkZmtwZHRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzOTc0ODksImV4cCI6MjA5MTk3MzQ4OX0.xLUcPUUguRBQttNwiIRWJHxjJjLqrQDMu4Ubsk5yZoQ';
 const SUPABASE_ANON_KEY_PLACEHOLDER = 'your_anon_public_key';
 const SUPABASE_TABLE = 'site_updates';
-const FEEDBACK_SHEET_WEBHOOK_URL = '';
 const SEEDED_FEEDBACK_ENTRIES = [
   {
     username: '',
@@ -3290,7 +3289,6 @@ const SEEDED_FEEDBACK_ENTRIES = [
 ];
 const SUPABASE_ROW_ID = 'main';
 const SUPABASE_SHARED_STATE_REFRESH_MS = 10000;
-const FEEDBACK_GOOGLE_SHEET_ID = '1rT4mlBtaJyTA4pXqDlIo5dn7mPcv8MLAGolVtSi8oNE';
 const SHARED_UPDATES_JSON_URL = 'assets/data/latest-updates.json';
 const SPOTIFY_PLAYLIST_URI = 'spotify:playlist:0ni59E9HbWpAe8Ydnseh4O';
 const DATA = [
@@ -4595,30 +4593,6 @@ async function submitFeedbackToBackend(item) {
   }
 }
 
-async function pushFeedbackToGoogleSheets(item) {
-  if (!FEEDBACK_SHEET_WEBHOOK_URL) return null;
-  const body = new URLSearchParams({
-    sheetId: FEEDBACK_GOOGLE_SHEET_ID,
-    username: item.includeUsername ? item.username : '',
-    dateTime: item.createdAt,
-    message: item.message,
-    aiTopic: item.aiTopic,
-    aiPriority: item.aiPriority,
-  });
-  try {
-    await fetch(FEEDBACK_SHEET_WEBHOOK_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: body.toString(),
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
 function classifyFeedback(message) {
   const text = message.toLowerCase();
   let topic = 'general';
@@ -4667,16 +4641,9 @@ function submitFeedback() {
   }
   status.textContent = 'Sending feedback...';
 
-  Promise.allSettled([
-    submitFeedbackToBackend(feedbackItem),
-    pushFeedbackToGoogleSheets(feedbackItem),
-  ]).then(results => {
-    const sharedSyncOk = results[0].status === 'fulfilled' ? results[0].value : false;
-    const sheetSyncState = results[1].status === 'fulfilled' ? results[1].value : false;
-    if (sharedSyncOk && sheetSyncState === true) {
-      status.textContent = `Feedback saved to admin system and Google Sheet (${ai.topic}, ${ai.priority} priority).`;
-    } else if (sharedSyncOk) {
-      status.textContent = `Feedback saved to admin system (${ai.topic}, ${ai.priority} priority). Google Sheet sync is not configured yet.`;
+  submitFeedbackToBackend(feedbackItem).then(sharedSyncOk => {
+    if (sharedSyncOk) {
+      status.textContent = `Feedback saved to admin system (${ai.topic}, ${ai.priority} priority).`;
     } else {
       status.textContent = `Feedback saved on this device (${ai.topic}, ${ai.priority} priority). Shared sync needs attention.`;
     }
