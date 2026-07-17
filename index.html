@@ -648,47 +648,6 @@ header p {
   mask-image: radial-gradient(circle at 50% 42%, #000 0 38%, rgba(0,0,0,0.96) 58%, rgba(0,0,0,0.38) 76%, transparent 96%);
   -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0 38%, rgba(0,0,0,0.96) 58%, rgba(0,0,0,0.38) 76%, transparent 96%);
 }
-.animation-static-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.16)),
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.24) 0 2px,
-      rgba(16,18,24,0.18) 2px 4px
-    );
-  transition: opacity 360ms ease, filter 360ms ease;
-  filter: contrast(1) brightness(1);
-}
-.animation-static-layer::before,
-.animation-static-layer::after {
-  content: "";
-  position: absolute;
-  inset: -12%;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,0.18) 0 1px,
-      transparent 1px 3px,
-      rgba(255,255,255,0.08) 3px 4px,
-      transparent 4px 7px
-    ),
-    linear-gradient(180deg, transparent, rgba(255,255,255,0.16), transparent);
-  opacity: 0.7;
-}
-.animation-static-layer::before {
-  animation: live-static-drift 220ms steps(3) infinite;
-  mix-blend-mode: screen;
-}
-.animation-static-layer::after {
-  animation: live-static-drift 160ms steps(4) infinite reverse;
-  mix-blend-mode: overlay;
-  opacity: 0.5;
-}
 .animation-live-media::after {
   content: "";
   position: absolute;
@@ -704,10 +663,6 @@ header p {
   transform: scale(1.015);
   filter: grayscale(1) contrast(0.92) brightness(0.82) blur(1px);
 }
-.bio-animation-card.is-signal-lost .animation-static-layer {
-  opacity: 0.88;
-  filter: contrast(1.16) brightness(1.08);
-}
 .bio-animation-card.is-trolled .animation-primary-poster {
   opacity: 0.18;
   transform: scale(1.02);
@@ -716,10 +671,6 @@ header p {
 .bio-animation-card.is-trolled .animation-troll-poster {
   opacity: 0.9;
   transform: scale(1);
-}
-.bio-animation-card.is-trolled .animation-static-layer {
-  opacity: 0.28;
-  filter: contrast(1.08) brightness(0.92);
 }
 .bio-animation-card.is-trolled .animation-live-top .animation-live-label,
 .bio-animation-card.is-trolled .animation-live-top .animation-live-badge {
@@ -925,17 +876,6 @@ header p {
     box-shadow: 0 0 0 0 rgba(255,69,58,0);
   }
 }
-@keyframes live-static-drift {
-  0% {
-    transform: translate3d(-1.5%, -1%, 0);
-  }
-  50% {
-    transform: translate3d(1.2%, 0.8%, 0);
-  }
-  100% {
-    transform: translate3d(-0.6%, 1.4%, 0);
-  }
-}
 .bio-animation-card .animation-frame {
   aspect-ratio: 5 / 6;
 }
@@ -1013,10 +953,6 @@ header p {
     display: none;
   }
   .animation-live-dot {
-    animation: none;
-  }
-  .animation-static-layer::before,
-  .animation-static-layer::after {
     animation: none;
   }
 }
