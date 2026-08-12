@@ -1577,6 +1577,15 @@ header p {
   border: 1px solid rgba(28,28,30,0.08);
   box-shadow: 0 18px 32px rgba(28,28,30,0.08);
 }
+/* Sheet-only chrome — hidden on desktop, where #photo-panel is a side column. */
+.photo-close,
+.photo-sheet-grab,
+.photo-scrim { display: none; }
+.photo-empty {
+  font-size: 13px;
+  color: #6e6e73;
+  padding: 18px 4px 6px;
+}
 .photo-gallery-badge {
   position: absolute;
   top: 12px;
@@ -2515,28 +2524,100 @@ footer a:hover { color: #fff; }
     text-overflow: ellipsis;
   }
 
+  /* On phones the photo panel becomes a bottom sheet that slides over the map,
+     so tapping a location shows the sticker right there instead of burying it
+     under the whole location list. */
   #photo-panel {
     order: 3;
-    width: 100%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-width: none;
+    max-height: 82vh;
+    z-index: 8001;
+    display: flex;
+    flex-direction: column;
     border-left: none;
     border-top: 1px solid rgba(28,28,30,0.08);
-    max-height: 0;
-    padding: 0;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -18px 44px rgba(15,23,42,0.28);
+    padding: 0 14px;
     opacity: 0;
-    transition: max-height 220ms ease, opacity 180ms ease, padding 220ms ease;
+    transform: translateY(103%);
+    pointer-events: none;
+    overflow: hidden;
+    transition: transform 260ms cubic-bezier(0.32,0.72,0,1), opacity 160ms ease;
   }
 
   #map-app.show-photo #photo-panel {
-    width: 100%;
-    max-height: 44vh;
+    width: auto;
     opacity: 1;
-    padding: 12px;
+    transform: translateY(0);
+    pointer-events: auto;
+    padding: 0 14px calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  #photo-panel h4 {
+    padding-right: 34px;
+  }
+
+  #photo-panel p {
+    margin-bottom: 10px;
   }
 
   #photo-gallery {
     height: auto;
-    max-height: calc(48vh - 70px);
+    max-height: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+
+  .photo-sheet-grab {
+    display: block;
+    flex: none;
+    width: 42px;
+    height: 5px;
+    margin: 8px auto 10px;
+    border-radius: 999px;
+    background: rgba(28,28,30,0.2);
+  }
+
+  .photo-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 14px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(28,28,30,0.08);
+    color: #3a3a3c;
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .photo-close:active { background: rgba(28,28,30,0.16); }
+
+  .photo-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 8000;
+    background: rgba(12,14,20,0.44);
+    animation: photoScrimIn 180ms ease;
+  }
+  .photo-scrim[hidden] { display: none; }
+  @keyframes photoScrimIn { from { opacity: 0; } to { opacity: 1; } }
+
+  body.photo-sheet-open { overflow: hidden; }
 
   #admin-pass { width: 120px; }
 }
@@ -3107,16 +3188,20 @@ footer a:hover { color: #fff; }
       </div>
       <div id="scale-bar">San Bernardino &amp; Riverside Counties</div>
     </div>
-    <aside id="photo-panel">
+    <aside id="photo-panel" aria-label="Sticker photos">
+      <div class="photo-sheet-grab" aria-hidden="true"></div>
+      <button id="photo-close" class="photo-close" type="button" onclick="closePopup()" aria-label="Close sticker photos">&times;</button>
       <div class="photo-title-row">
         <h4 id="photo-title"></h4>
         <span id="photo-project-pill" class="project-pill photo-project-pill"></span>
       </div>
       <p id="photo-meta"></p>
       <div id="photo-gallery"></div>
+      <p id="photo-empty" class="photo-empty" hidden>No photo for this drop yet — the sticker is out there though.</p>
     </aside>
 
   </div>
+  <div id="photo-scrim" class="photo-scrim" onclick="closePopup()" hidden></div>
 </section>
 <section id="printables-section" aria-labelledby="printables-heading">
   <div class="printables-head">
@@ -3933,6 +4018,7 @@ function positionPopup(loc) {
 
 function closePopup() {
   document.getElementById('popup').style.display='none';
+  setPhotoSheetOpen(false);
   updatePhotoPanel(null);
   activeIdx=null;
   document.querySelectorAll('.loc-card').forEach(c=>c.classList.remove('active'));
@@ -4008,18 +4094,63 @@ async function resolveImageUrls(loc) {
 }
 
 let photoRequestId = 0;
+const PHOTO_SHEET_MEDIA = '(max-width: 900px)';
+
+/* On phones the photo panel is a bottom sheet over the map, so it needs a
+   scrim and a scroll lock; on desktop it stays an inline side column. */
+function isPhotoSheet() {
+  return window.matchMedia(PHOTO_SHEET_MEDIA).matches;
+}
+
+function setPhotoSheetOpen(open) {
+  const shouldOpen = Boolean(open) && isPhotoSheet();
+  const scrim = document.getElementById('photo-scrim');
+  if (scrim) scrim.hidden = !shouldOpen;
+  document.body.classList.toggle('photo-sheet-open', shouldOpen);
+}
+
+function fillPhotoMeta(loc) {
+  const title = document.getElementById('photo-title');
+  const meta = document.getElementById('photo-meta');
+  const projectPill = document.getElementById('photo-project-pill');
+  title.textContent = loc.name;
+  meta.textContent = `${loc.city} · ${loc.date} · ${loc.count} sticker${loc.count > 1 ? 's' : ''}`;
+  if (loc.project) {
+    projectPill.textContent = loc.project;
+    projectPill.classList.add('is-visible');
+  } else {
+    projectPill.textContent = '';
+    projectPill.classList.remove('is-visible');
+  }
+}
+
 async function updatePhotoPanel(loc) {
   const app = document.getElementById('map-app');
   const gallery = document.getElementById('photo-gallery');
   const title = document.getElementById('photo-title');
   const meta = document.getElementById('photo-meta');
   const projectPill = document.getElementById('photo-project-pill');
+  const emptyNote = document.getElementById('photo-empty');
   const requestId = ++photoRequestId;
+  const sheet = isPhotoSheet();
+  if (loc && sheet) {
+    // Open the sheet straight away — image probing can take a beat.
+    app.classList.add('show-photo');
+    gallery.innerHTML = '';
+    fillPhotoMeta(loc);
+    emptyNote.textContent = 'Looking for the sticker photo…';
+    emptyNote.hidden = false;
+    setPhotoSheetOpen(true);
+  }
   const imageUrls = await resolveImageUrls(loc);
   if (requestId !== photoRequestId) return;
   gallery.scrollTop = 0;
-  if (loc && imageUrls.length) {
+  emptyNote.textContent = 'No photo for this drop yet — the sticker is out there though.';
+  emptyNote.hidden = true;
+  if (loc && (imageUrls.length || sheet)) {
     app.classList.add('show-photo');
+    setPhotoSheetOpen(true);
+    emptyNote.hidden = imageUrls.length > 0;
     gallery.innerHTML = '';
     imageUrls.forEach((url, index) => {
       const frame = document.createElement('div');
@@ -4039,17 +4170,10 @@ async function updatePhotoPanel(loc) {
       }
       gallery.appendChild(frame);
     });
-    title.textContent = loc.name;
-    if (loc.project) {
-      projectPill.textContent = loc.project;
-      projectPill.classList.add('is-visible');
-    } else {
-      projectPill.textContent = '';
-      projectPill.classList.remove('is-visible');
-    }
-    meta.textContent = `${loc.city} · ${loc.date}`;
+    fillPhotoMeta(loc);
   } else {
     app.classList.remove('show-photo');
+    setPhotoSheetOpen(false);
     gallery.innerHTML = '';
     title.textContent = '';
     meta.textContent = '';
@@ -4057,6 +4181,20 @@ async function updatePhotoPanel(loc) {
     projectPill.classList.remove('is-visible');
   }
 }
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.body.classList.contains('photo-sheet-open')) closePopup();
+});
+
+/* Rotating a phone to a tablet-width layout must not strand the scrim. */
+const photoSheetQuery = window.matchMedia(PHOTO_SHEET_MEDIA);
+const handlePhotoSheetChange = () => {
+  const app = document.getElementById('map-app');
+  const showing = Boolean(app && app.classList.contains('show-photo'));
+  setPhotoSheetOpen(isPhotoSheet() && showing);
+};
+if (photoSheetQuery.addEventListener) photoSheetQuery.addEventListener('change', handlePhotoSheetChange);
+else photoSheetQuery.addListener(handlePhotoSheetChange);
 
 function toggleCalendar() {
   calendarOpen = !calendarOpen;
