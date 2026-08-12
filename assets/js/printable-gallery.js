@@ -178,7 +178,7 @@
 
     if (option.fmt === 'png') {
       downloadPng(sticker);
-      setStatus('Saved. Go troll. 🧌');
+      setStatus('Saved. Go troll.');
       return;
     }
 

@@ -3944,7 +3944,7 @@ function renderPins() {
     const idx = DATA.indexOf(loc);
     const col = CITIES[loc.city];
     const html = `<div class="lf-pin${activeIdx === idx ? ' active-pin' : ''}">
-      <div class="pin-body" style="background:${col.pin}"><span class="pin-letter">🧌</span></div>
+      <div class="pin-body" style="background:${col.pin}"><span class="pin-letter">${loc.city.charAt(0)}</span></div>
       ${loc.count>1?`<div class="pin-count">${loc.count}</div>`:''}
     </div>`;
     const marker = L.marker(getLatLngForLocation(loc), {
