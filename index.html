@@ -23,6 +23,14 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&family=Rubik+Glitch&family=Space+Grotesk:wght@500;700&display=swap');
 
+/* Native cross-document page transitions. Only fires between same-origin
+   documents, so this stays inert until the site is served through the
+   front door at trollrunner.net/stickers. Mobile only by design.
+   Sits after the @import, which must stay first in the sheet. */
+@media (max-width: 760px) {
+  @view-transition { navigation: auto; }
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
