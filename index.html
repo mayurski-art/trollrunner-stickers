@@ -64,6 +64,18 @@ html, body {
   color: white;
 }
 
+/* Same animated starfield as trollrunner.net's home page / PFP Studio,
+   sitting behind the page so it reads as part of the same site once
+   served through the front door. The purple nebula tint keeps this
+   page's existing color identity instead of world.html's green one. */
+.space { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #000; pointer-events: none; }
+.space canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.space::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 70% 60% at 15% 5%, rgba(44,32,101,0.55) 0%, rgba(17,17,38,0.35) 45%, transparent 75%);
+}
+body > header, body > main, body > footer { position: relative; z-index: 1; }
+
 /* ── HEADER ── */
 header {
   position: relative;
@@ -3413,6 +3425,47 @@ footer a:hover { color: #fff; }
 </style>
 </head>
 <body>
+
+<div class="space" aria-hidden="true"><canvas id="stars"></canvas></div>
+<script>
+/* Same canvas starfield as world.html/pfp.html — a static single paint
+   when the viewer has asked for reduced motion, animated otherwise. */
+(() => {
+  const canvas = document.getElementById('stars'), ctx = canvas.getContext('2d');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let stars = [], raf = 0;
+  function seed() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(innerWidth * dpr);
+    canvas.height = Math.floor(innerHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round((innerWidth * innerHeight) / 9000);
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+      r: Math.random() * 1.25 + 0.25, a: Math.random() * 0.5 + 0.25,
+      tw: Math.random() * 0.02 + 0.004, p: Math.random() * Math.PI * 2,
+    }));
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const s of stars) {
+      const alpha = calm.matches ? s.a : s.a + Math.sin(t * s.tw + s.p) * 0.22;
+      ctx.globalAlpha = Math.max(0.05, Math.min(1, alpha));
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
+  function startStars() {
+    cancelAnimationFrame(raf); seed();
+    if (calm.matches) draw(0); else raf = requestAnimationFrame(loop);
+  }
+  addEventListener('resize', startStars, { passive: true });
+  calm.addEventListener?.('change', startStars);
+  startStars();
+})();
+</script>
 
 <!-- Rewrites the mobile "Island" back-link to a same-origin path once this
      site is served through the trollrunner.net front door, so that hop stays
