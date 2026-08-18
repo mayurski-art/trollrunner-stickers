@@ -25,14 +25,6 @@
 /* Archivo Black + Rubik (plain) added above for the mobile island-shell reskin below —
    DM Sans/DM Mono/Rubik Glitch/Space Grotesk were already imported for desktop. */
 
-/* Native cross-document page transitions. Only fires between same-origin
-   documents, so this stays inert until the site is served through the
-   front door at trollrunner.net/stickers. Mobile only by design.
-   Sits after the @import, which must stay first in the sheet. */
-@media (max-width: 760px) {
-  @view-transition { navigation: auto; }
-}
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -64,10 +56,9 @@ html, body {
   color: white;
 }
 
-/* Same animated starfield as trollrunner.net's home page / PFP Studio,
-   sitting behind the page so it reads as part of the same site once
-   served through the front door. The purple nebula tint keeps this
-   page's existing color identity instead of world.html's green one. */
+/* Same animated starfield as trollrunner.net's home page / PFP Studio.
+   The purple nebula tint keeps this page's existing color identity
+   instead of world.html's green one. */
 .space { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #000; pointer-events: none; }
 .space canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .space::after {
@@ -3466,12 +3457,6 @@ footer a:hover { color: #fff; }
   startStars();
 })();
 </script>
-
-<!-- Rewrites the mobile "Island" back-link to a same-origin path once this
-     site is served through the trollrunner.net front door, so that hop stays
-     a native page transition instead of a hard cross-origin jump. Inert
-     everywhere else (see the script for the probe logic). -->
-<script src="https://trollrunner.net/assets/js/troll-frontdoor.js" defer></script>
 
 <header class="stickers-header">
   <a class="island-back-link" href="https://trollrunner.net/" aria-label="Back to the Island">
