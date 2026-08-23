@@ -47,6 +47,8 @@
   --bg-shell: radial-gradient(circle at 15% 5%, #2c2065 0%, #111126 45%, #050507 100%);
   --cursor-admin: url('https://www.rw-designer.com/cursor-extern.php?id=39757'), auto;
   --cursor-search: url('https://www.rw-designer.com/cursor-extern.php?id=39756'), auto;
+  /* Same trollface pointer as world.html, cut from the official logo art. */
+  --cursor-troll: url(assets/images/troll-cursor.png) 6 3, pointer;
 }
 
 html, body {
@@ -266,7 +268,7 @@ header h1 {
   font-size: 12px;
   font-weight: 600;
   padding: 6px 10px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 .header-song-wrap {
   width: 220px;
@@ -1105,7 +1107,7 @@ header p {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 #tracker-toggle:hover {
@@ -1141,7 +1143,7 @@ header p {
   border-radius: 12px;
   padding: 7px 10px;
   font-size: 15px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   line-height: 1;
   box-shadow: 0 8px 20px rgba(28,28,30,0.08);
 }
@@ -1261,7 +1263,7 @@ header p {
   border-radius: 8px;
   font-size: 11px;
   padding: 4px 8px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 #calendar-panel {
   display: none;
@@ -1280,7 +1282,7 @@ header p {
   border-radius: 10px;
   width: 28px;
   height: 28px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 #calendar-label { font-size: 12px; font-weight: 600; color: var(--text-primary); }
 #calendar-grid {
@@ -1296,7 +1298,7 @@ header p {
   color: var(--text-primary);
   padding: 8px 0;
   text-align: center;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 .cal-day.has-drop { border-color: #9fb8ff; background: #edf3ff; }
 .cal-day.active { background: #007aff; color: white; border-color: #007aff; font-weight: 700; }
@@ -1348,7 +1350,7 @@ header p {
   border-radius: 14px;
   background: linear-gradient(180deg, #ffffff, #f4f6fb);
   color: var(--text-primary);
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   box-shadow: 0 10px 22px rgba(28,28,30,0.06);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
@@ -1457,7 +1459,7 @@ header p {
   border-radius: 12px;
   background: transparent;
   color: var(--text-primary);
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 .city-option:hover {
@@ -1516,7 +1518,7 @@ header p {
   border: 1px solid rgba(28,28,30,0.08);
   padding: 10px 11px;
   margin-bottom: 6px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   box-shadow: 0 10px 24px rgba(28,28,30,0.05);
   transition: background 0.1s, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
 }
@@ -1558,7 +1560,7 @@ header p {
 .leaflet-control-attribution { font-size: 10px; }
 .lf-pin {
   transform: translate(-50%, -100%);
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 .lf-pin .pin-body { width: 30px; height: 30px; }
 .lf-pin.active-pin { z-index: 999; }
@@ -1650,7 +1652,7 @@ header p {
 .pin {
   position: absolute;
   transform: translate(-50%, -100%);
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   pointer-events: all;
   transition: transform 0.15s;
   z-index: 10;
@@ -1703,7 +1705,7 @@ header p {
   width: 20px; height: 20px;
   background: #e5e5ea; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 13px; color: #6e6e73;
+  cursor: var(--cursor-troll); font-size: 13px; color: #6e6e73;
   transition: background 0.1s;
 }
 #popup-close:hover { background: #d1d1d6; }
@@ -1733,7 +1735,7 @@ header p {
   background: rgba(255,255,255,0.94);
   backdrop-filter: blur(10px);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 20px; font-weight: 300;
+  cursor: var(--cursor-troll); font-size: 20px; font-weight: 300;
   color: var(--text-primary); border: none; outline: none;
   font-family: var(--font); line-height: 1; transition: background 0.1s;
 }
@@ -2050,7 +2052,7 @@ header p {
   color: #1c1c1e;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 
 .feedback-identity-toggle input {
@@ -2115,7 +2117,7 @@ header p {
   font-weight: 600;
   font-family: var(--font);
   padding: 8px 12px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 
 .feedback-status {
@@ -2313,7 +2315,7 @@ footer a:hover { color: #fff; }
   font-size: 12px;
   font-weight: 600;
   padding: 6px 10px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 #admin-access,
 #admin-access * {
@@ -2645,7 +2647,7 @@ footer a:hover { color: #fff; }
     color: #3a3a3c;
     font-size: 19px;
     line-height: 1;
-    cursor: pointer;
+    cursor: var(--cursor-troll);
   }
   .photo-close:active { background: rgba(28,28,30,0.16); }
 
@@ -2963,7 +2965,7 @@ footer a:hover { color: #fff; }
   font-weight: 700;
   letter-spacing: 0.02em;
   padding: 10px 12px;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   transition: filter 0.15s, transform 0.15s;
 }
 .printable-download-btn:hover { filter: brightness(1.07); }
@@ -3039,7 +3041,7 @@ footer a:hover { color: #fff; }
   color: #1c1c1e;
   font-size: 20px;
   line-height: 1;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
 }
 .print-modal-panel h3 {
   font-size: 18px;
@@ -3071,7 +3073,7 @@ footer a:hover { color: #fff; }
   font-family: var(--font);
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: var(--cursor-troll);
   transition: background 0.12s, border-color 0.12s;
 }
 .print-opt span {
